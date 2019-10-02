@@ -1,86 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Bootstrap Example</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet"
-            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-        <script
-            src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script
-            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    </head>
-    <body>
 
-        <div class="container">
-            <h2>Project Title </h2>
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="username">Username:</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="username"
-                            placeholder="Enter username" name="username">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="pwd">Password:</label>
-                    <div class="col-sm-10">
-                        <input type="password" class="form-control" id="pwd"
-                            placeholder="Enter password" name="pwd">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-2" for="pwd">Retailer Id:</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="retailer-id"
-                            placeholder="Enter Retailer Id" name="retailer-id">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button class="btn btn-default">Search Customers</button>
-                    </div>
-                </div>
-            </form>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>
-                            <input type="checkbox">
-                            <span>Select All</span>
-                        </th>
-                        <th>Id</th>
-                        <th>Customer Name</th>
-                        <th>Retailer Id</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>1</td>
-                        <td>John</td>
-                        <td>r-12</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>2</td>
-                        <td>Mike</td>
-                        <td>r-13</td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox"></td>
-                        <td>1</td>
-                        <td>Rossy</td>
-                        <td>r-14</td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="col-sm-10">
-                <button class="btn btn-default">ReadSpamService</button>
-            </div>
+  <head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/simplePagination.css">
+  </head>
+
+  <body>
+
+    <div class="container margin-top-100">
+      <form class="form-horizontal" onsubmit="return false;">
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="username">Username:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="username"
+              placeholder="Enter username" name="username">
+          </div>
         </div>
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="pwd">Password:</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="pwd"
+              placeholder="Enter password" name="pwd">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="pwd">Retailer Id:</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="retailer-Id"
+              placeholder="Enter Retailer Id" name="retailer-Id">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <div class="alert alert-danger hide" id="error-msg">All Fields are
+              required..</div>
+            <button class="btn btn-default" onclick="searchCustomer()">Search
+              Customers</button>
+          </div>
+        </div>
+      </form>
+      <table class="table" id="customer-list">
+        <thead>
+          <tr>
+            <th>
+              <div>
+                <input onchange="checkAll()" name="select_all" type="checkbox">
+                <span>Entire Select All</span>
+              </div>
+              <div>
+                <input onchange="checkCurrentPageAll()" name="select_current_page_all" type="checkbox">
+                <span>Select All</span>
+              </div>
+            </th>
+            <th>Id</th>
+            <th>Customer Name</th>
+            <th>Retailer Id</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="no-data-row">
+            <td colspan="4">
+              <div class="text-center alert alert-info">
+                No Data Available
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="clearfix"></div>
+      <div id="pagination-row" class="row hide">
+        <div class="col-sm-10">
+          <ul id="pagination-steps" class="pagination-sm"></ul>
+        </div>
+        <div class="col-sm-2">
+          <label for="item-per-page">Item Per Page:</label>
+          <select name="item-per-page"
+            onchange="onPageItemCountChange(this.value)"
+            class="form-control">
+            <option selected value="10">10</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+      </div>
 
+      <div class="progress">
+        <div id="percentage-bar" class="progress-bar" role="progressbar"
+          aria-valuenow="45"
+          aria-valuemin="0" aria-valuemax="100" style="width:45%">
+        </div>
+      </div>
+      <div class="col-sm-10">
+        <button class="btn btn-default" onclick="onReadSpamService()">ReadSpamService</button>
+      </div>
 
-    </body>
+      <div>
+        <p id="selected-customer-ids"></p>
+      </div>
+    </div>
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="./js/script.js"></script>
+    <script src="./js/jquery.simplePagination.js"></script>
+  </body>
+
 </html>
